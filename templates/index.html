@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32-CAM Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-2xl bg-white shadow-lg rounded-lg p-4">
+        <h1 class="text-xl font-bold text-center mb-4">ESP32-CAM Live Dashboard</h1>
+        
+        <!-- Live Image Feed -->
+        <div class="border rounded-lg overflow-hidden mb-4">
+            <img id="esp32-cam-feed" class="w-full" src="/video_feed" alt="Live Feed">
+        </div>
+
+        <!-- Detection Message -->
+        <div id="status-box" class="text-center text-red-600 font-bold text-lg">
+            No vehicle detected.
+        </div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            fetch('/get_status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("status-box").innerText = data.status;
+                    speakText(data.status);
+                });
+        }
+
+        function speakText(text) {
+            let speech = new SpeechSynthesisUtterance();
+            speech.text = text;
+            speech.lang = "en-US";
+            speech.rate = 3;
+            speech.pitch = 1;
+            window.speechSynthesis.speak(speech);
+        }
+
+        setInterval(updateStatus, 1000);  // Update every 5 seconds
+    </script>
+</body>
+</html>
