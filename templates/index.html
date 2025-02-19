@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32-CAM Dashboard</title>
+    <title>Hill-Bend Live Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
@@ -22,12 +22,26 @@
     </div>
 
     <script>
+        let previousStatus = "";
+        let frameCount = 0;
+        const requiredFrames = 3;
+
         function updateStatus() {
             fetch('/get_status')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById("status-box").innerText = data.status;
-                    speakText(data.status);
+                    if (data.status === previousStatus) {
+                        frameCount++;
+                    } else {
+                        frameCount = 1;
+                    }
+                    
+                    if (frameCount == requiredFrames) {
+                        document.getElementById("status-box").innerText = data.status;
+                        speakText(data.status);
+                    }
+                    
+                    previousStatus = data.status;
                 });
         }
 
@@ -40,7 +54,7 @@
             window.speechSynthesis.speak(speech);
         }
 
-        setInterval(updateStatus, 1000);  // Update every 5 seconds
+        setInterval(updateStatus, 1000);  // Update every second
     </script>
 </body>
 </html>
