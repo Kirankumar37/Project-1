@@ -54,13 +54,13 @@ def detect_vehicle():
 
         if left_detected and right_detected:
             requests.get("http://192.168.1.31/both")  # Red on both sides
-            detection_result = {"status": "Vehicles detected on both sides. Go slow with caution."}
+            detection_result = {"status": "Vehicles detected on opposite lane, Go slow with caution."}
         elif left_detected:
             requests.get("http://192.168.1.31/left")  # Red on left side
-            detection_result = {"status": "Vehicle detected on Right. Be cautious."}
+            detection_result = {"status": "Right lane is clear, you're free to go."}
         elif right_detected:
             requests.get("http://192.168.1.31/right")  # Red on right side
-            detection_result = {"status": "Vehicle detected on Left. Be cautious."}
+            detection_result = {"status": "Left lane is clear, you're free to go"}
         else:
             requests.get("http://192.168.1.31/none")  # Green on both sides
             detection_result = {"status": " "}
